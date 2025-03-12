@@ -24,23 +24,19 @@ public class ConexaoMySQL {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverManager.getConnection(URL + BANCO, USUARIO, SENHA);
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Erro ao conectar ao banco: " + e.getMessage());
-            return null;
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Driver MySQL não encontrado: " + e.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao conectar ao banco: " + e.getMessage());
         }
     }
 
     // Testando a criação do banco e a conexão
     public static void main(String[] args) {
         criarBancoSeNaoExistir(); // Criar/verificar banco
-        try (Connection conexao = conectar()) {
-            if (conexao != null) {
-                System.out.println("Conexão bem-sucedida!");
-            } else {
-                System.err.println("Falha na conexão com o banco de dados.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Erro ao fechar a conexão: " + e.getMessage());
+        Connection conexao = conectar(); // Conectar ao banco
+        if (conexao != null) {
+            System.out.println("Conexão bem-sucedida!");
         }
     }
 }
